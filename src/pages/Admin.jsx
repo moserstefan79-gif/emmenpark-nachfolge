@@ -37,7 +37,7 @@ export default function Admin() {
       </Card>
       <p className="mt-3 text-xs text-inkSoft">Platzhalter-Adressen (…@emmenpark.ch) vor der Einladung durch die echten Adressen ersetzen. Benutzer anlegen: Supabase → Authentication → Users → «Invite user» mit derselben E-Mail.</p>
       <Modal open={!!edit} title="Mitglied" onClose={() => setEdit(null)}>
-        {edit && <EntityForm fields={fields} initial={edit} onSubmit={async (v) => { await pr.save(v); await reload(); setEdit(null) }} onDelete={async (id) => { await pr.remove(id); setEdit(null) }} />}
+        {edit && <EntityForm fields={fields} initial={edit} onSubmit={async (v) => { await pr.save(v); await reload(); setEdit(null) }} onDelete={async (id) => { if (!confirm('Achtung: Löschen entfernt auch AKV, VSOP-Teilnahme und Ereignisse dieser Person. Besser: «Aktiv» abwählen. Trotzdem löschen?')) return; await pr.remove(id); setEdit(null) }} />}
       </Modal>
     </div>
   )

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from './supabase'
 
 /** Lädt eine Tabelle (oder View) und bietet reload/save/remove. */
@@ -7,12 +7,16 @@ export function useTable(table, { select = '*', order = null, filter = null, dep
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  const seq = useRef(0)
   const reload = useCallback(async () => {
+    const my = ++seq.current
     setLoading(true)
     let q = supabase.from(table).select(select)
     if (filter) q = filter(q)
     if (order) q = q.order(order.column, { ascending: order.ascending ?? true, nullsFirst: false })
     const { data, error } = await q
+    if (my !== seq.current) return // ältere Antwort verwerfen
+    if (error) { console.error(`[${table}]`, error.message); window.dispatchEvent(new CustomEvent('app-error', { detail: `${table}: ${error.message}` })) }
     setError(error); setRows(data ?? []); setLoading(false)
   }, [table, select, JSON.stringify(order), ...deps]) // eslint-disable-line
 
@@ -62,7 +66,7 @@ export const VISIBILITY = { vr: 'nur VR', gl: 'VR + GL', alle: 'alle Mitglieder'
 export const PROFILSTUFE = { offen: 'offen', kader: 'Kader', gl_ohne_beteiligung: 'GL ohne Beteiligung', gl_mit_beteiligung: 'GL mit Beteiligung' }
 
 export const fmtDate = (d) => d ? new Date(d).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '–'
-export const fmtCHF = (n) => n == null ? '–' : 'CHF ' + Math.round(Number(n)).toLocaleString('de-CH').replace(/,/g, "'")
+export const fmtCHF = (n) => n == null ? '–' : 'CHF ' + Math.round(Number(n)).toLocaleString('de-CH').replace(/[’,]/g, "'")
 export const fmtPct = (n, d = 1) => n == null ? '–' : Number(n).toFixed(d) + ' %'
 export const quarterOf = (d) => { const x = new Date(d); return `${x.getFullYear()}-Q${Math.floor(x.getMonth() / 3) + 1}` }
 export const today = () => new Date().toISOString().slice(0, 10)

@@ -104,7 +104,8 @@ export function Weg12() {
   const et = useTable('zieltreppe_etappen', { order: { column: 'quarter' } })
   const now = new Date()
   const quarters = []
-  for (let i = 0; i < 4; i++) { const d = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3 + i * 3, 1); quarters.push({ key: quarterOf(d), start: d, end: new Date(d.getFullYear(), d.getMonth() + 3, 0) }) }
+  const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  for (let i = 0; i < 4; i++) { const d = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3 + i * 3, 1); quarters.push({ key: quarterOf(d), start: iso(d), end: iso(new Date(d.getFullYear(), d.getMonth() + 3, 0)) }) }
   const themeOf = (items) => { const c = {}; items.forEach((m) => m.dimension && (c[m.dimension] = (c[m.dimension] ?? 0) + 1)); return Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0] }
   return (
     <div>
@@ -112,7 +113,7 @@ export function Weg12() {
         intro="Nachfolgefähig werden ist kein Wochenendprojekt. Die nächsten zwölf Monate als erster bewusster Abschnitt: jedes Quartal unter einem Hauptthema – Fundament, Verwaltungsrat, Team, Rolle. Die Pfadkarte entsteht automatisch aus Meilensteinen und Zieltreppe-Etappen." />
       <div className="grid gap-3 md:grid-cols-4">
         {quarters.map((q, i) => {
-          const items = ms.rows.filter((m) => { const d = new Date(m.due_date); return d >= q.start && d <= q.end && !['erledigt', 'zurueckgestellt'].includes(m.status) })
+          const items = ms.rows.filter((m) => m.due_date >= q.start && m.due_date <= q.end && !['erledigt', 'zurueckgestellt'].includes(m.status))
           const ets = et.rows.filter((e) => e.quarter === q.key)
           const theme = DIMENSIONS[themeOf(items)]
           return (

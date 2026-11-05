@@ -48,7 +48,7 @@ npm run dev
 ## Mitglieder einladen
 
 1. Administration → Mitglieder: Platzhalter-Adressen (`…@emmenpark.ch`) durch die echten ersetzen.
-2. Supabase → Authentication → Users → «Invite user» mit derselben Adresse, oder das Mitglied fordert auf der Login-Seite einen Login-Link an (E-Mail-Signup muss in Supabase Auth aktiv sein).
+2. Supabase → Authentication → Users → «Invite user» mit derselben Adresse. Empfehlung: «Allow new users to sign up» unter Sign In / Providers → Email deaktivieren, damit nur eingeladene Personen Konten erhalten.
 3. Beim ersten Login wird das Profil automatisch verknüpft.
 
 ## Sichtprüfung ohne Netz

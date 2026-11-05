@@ -42,6 +42,7 @@ export function Empty({ children = 'Noch keine Einträge.' }) {
 }
 
 export function Modal({ open, title, onClose, children, wide }) {
+  // role=dialog für Screenreader
   useEffect(() => {
     const h = (e) => e.key === 'Escape' && onClose()
     if (open) window.addEventListener('keydown', h)
@@ -50,7 +51,7 @@ export function Modal({ open, title, onClose, children, wide }) {
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-forestDeep/60 p-4 md:p-10" onMouseDown={onClose}>
-      <div className={`card w-full ${wide ? 'max-w-4xl' : 'max-w-2xl'} p-5`} onMouseDown={(e) => e.stopPropagation()}>
+      <div role="dialog" aria-modal="true" aria-label={title} className={`card w-full ${wide ? 'max-w-4xl' : 'max-w-2xl'} p-5`} onMouseDown={(e) => e.stopPropagation()}>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-bold text-forest">{title}</h3>
           <button className="btn-ghost" onClick={onClose}>Schliessen</button>
@@ -158,7 +159,7 @@ export function Table({ cols, rows, onRow, empty }) {
         <thead><tr className="border-b border-sand text-left text-xs uppercase tracking-wide text-inkSoft">{cols.map((c) => <th key={c.key} className="py-2 pr-3 font-semibold">{c.label}</th>)}</tr></thead>
         <tbody>
           {rows.map((r) => (
-            <tr key={r.id} className={`border-b border-sand/70 ${onRow ? 'cursor-pointer hover:bg-cream' : ''}`} onClick={() => onRow?.(r)}>
+            <tr key={r.id} tabIndex={onRow ? 0 : undefined} onKeyDown={(e) => onRow && e.key === 'Enter' && onRow(r)} className={`border-b border-sand/70 ${onRow ? 'cursor-pointer hover:bg-cream focus:bg-cream outline-none' : ''}`} onClick={() => onRow?.(r)}>
               {cols.map((c) => <td key={c.key} className="py-2 pr-3 align-top">{c.render ? c.render(r) : r[c.key]}</td>)}
             </tr>
           ))}

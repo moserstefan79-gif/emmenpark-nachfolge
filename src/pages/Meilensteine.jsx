@@ -32,7 +32,7 @@ export default function Meilensteine() {
 
   const save = async (v) => {
     const { phase_title, phase_nr, owner_name, ...clean } = v
-    await ms.save(clean, 'milestones'); setEdit(null)
+    await ms.save(isVR ? clean : { id: clean.id, status: clean.status, description: clean.description }, 'milestones'); setEdit(null)
   }
 
   return (

@@ -8,6 +8,8 @@ const pct = (a, b) => (a != null && b) ? (a / b) * 100 : null
 export function Kennzahlen() {
   const { isVR } = useAuth()
   const kpi = useTable('kpi_snapshots', { order: { column: 'period', ascending: false } })
+  const vs = useTable('vsop_settings')
+  const ref = Number(vs.rows[0]?.ebit_reference ?? 350000)
   const [edit, setEdit] = useState(null)
   const cur = kpi.rows[0], prev = kpi.rows[1]
 
@@ -49,7 +51,7 @@ export function Kennzahlen() {
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             <Stat label={`Nettoerlös ${cur.period}`} value={fmtCHF(cur.revenue)} sub={prev && <Delta a={cur.revenue} b={prev.revenue} />} />
             <Stat label="EBITA-Marge" value={fmtPct(pct(cur.ebitda, cur.revenue))} sub={prev && `Vorjahr ${fmtPct(pct(prev.ebitda, prev.revenue))} · Branche ~8 %`} />
-            <Stat label="EBIT" value={fmtCHF(cur.ebit)} sub={<span>Referenz VSOP ≥ CHF 350'000 {cur.ebit != null && (cur.ebit >= 350000 ? '✓' : '– unter Referenz')}</span>} tone={cur.ebit != null && cur.ebit < 350000 ? 'text-red-700' : undefined} />
+            <Stat label="EBIT" value={fmtCHF(cur.ebit)} sub={<span>Referenz VSOP ≥ {fmtCHF(ref)} {cur.ebit != null && (cur.ebit >= ref ? '✓' : '– unter Referenz')}</span>} tone={cur.ebit != null && cur.ebit < ref ? 'text-red-700' : undefined} />
             <Stat label="Reingewinn" value={fmtCHF(cur.net_profit)} sub={prev && <Delta a={cur.net_profit} b={prev.net_profit} />} />
           </div>
           <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">

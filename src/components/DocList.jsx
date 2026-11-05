@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase, BUCKET } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
 import { useTable, DOC_CATEGORY, VISIBILITY, fmtDate } from '../lib/db'
@@ -17,6 +17,7 @@ export default function DocList({ meetingId = null, defaultCategory = 'sonstiges
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState(null)
   const fileRef = useRef()
+  useEffect(() => setVis(isVR ? defaultVisibility : 'gl'), [defaultVisibility, isVR])
 
   const upload = async (file) => {
     if (!file) return
@@ -36,7 +37,8 @@ export default function DocList({ meetingId = null, defaultCategory = 'sonstiges
   }
   const del = async (d) => {
     if (!confirm(`«${d.title}» löschen?`)) return
-    await supabase.storage.from(BUCKET).remove([d.storage_path])
+    const { error } = await supabase.storage.from(BUCKET).remove([d.storage_path])
+    if (error) return setErr('Datei konnte nicht gelöscht werden: ' + error.message)
     await docs.remove(d.id)
   }
 
