@@ -71,7 +71,7 @@ Stefan Moser`
           { key: 'active', label: 'Aktiv', render: (p) => p.active ? '✓' : '–' },
         ]} />
       </Card>
-      <p className="mt-3 text-xs text-inkSoft">Platzhalter-Adressen (…@emmenpark.ch) zuerst durch die echten Adressen ersetzen. «Login + Mail erstellen» legt das Konto mit Startpasswort an und öffnet die fertige Einladung in Ihrem Mailprogramm – so kommt sie von Ihrer Adresse.</p>
+      <p className="mt-3 text-xs text-inkSoft">«Login + Mail erstellen» legt das Konto mit Startpasswort an und öffnet die fertige Einladung in Ihrem Mailprogramm – so kommt sie von Ihrer Adresse.</p>
       <Modal open={!!login} title="Login erstellt" onClose={() => setLogin(null)}>
         {login && (
           <div className="space-y-3 text-sm">

@@ -37,9 +37,6 @@ Deno.serve(async (req) => {
     const { profile_id, reset } = await req.json();
     const { data: p, error: perr } = await admin.from("profiles").select("*").eq("id", profile_id).single();
     if (perr || !p) return json({ error: "Profil nicht gefunden" }, 404);
-    if (/@emmenpark\.ch$/i.test(p.email) && /^(markus\.balsiger|tom\.burkhalter|wolfgang\.aeberhard|christian\.scheuermeyer|andreas\.moser|michelle\.vonfluee|damaris\.strebel|lina\.walter|christian\.selau|stefan\.raetz)@/i.test(p.email)) {
-      return json({ error: "Bitte zuerst die Platzhalter-Adresse durch die echte E-Mail ersetzen" }, 400);
-    }
 
     const password = makePassword();
     let userId = p.user_id as string | null;
