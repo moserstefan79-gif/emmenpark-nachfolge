@@ -47,9 +47,12 @@ npm run dev
 
 ## Mitglieder einladen
 
-1. Administration → Mitglieder: Platzhalter-Adressen (`…@emmenpark.ch`) durch die echten ersetzen.
-2. Supabase → Authentication → Users → «Invite user» mit derselben Adresse. Empfehlung: «Allow new users to sign up» unter Sign In / Providers → Email deaktivieren, damit nur eingeladene Personen Konten erhalten.
-3. Beim ersten Login wird das Profil automatisch verknüpft.
+1. Administration → Mitglieder: Platzhalter-Adresse (`…@emmenpark.ch`) durch die echte ersetzen und speichern.
+2. In derselben Zeile «Login + Mail erstellen»: Die Edge Function `create-login` (nur für Admins, nutzt den Service-Schlüssel serverseitig) legt das Konto mit Startpasswort an; die App zeigt das Passwort einmalig und öffnet die fertige Einladung im Mailprogramm.
+3. «Passwort zurücksetzen» setzt ein neues Startpasswort, falls jemand seines vergessen hat. Mitglieder ändern ihr Passwort in der App (Seitenleiste → «Passwort ändern»).
+4. Empfehlung: In Supabase unter Authentication → Sign In / Providers → Email «Allow new users to sign up» deaktivieren.
+
+Edge Function deployen (bei Änderungen): `supabase functions deploy create-login` – Quelle in `supabase/functions/create-login/`.
 
 ## Sichtprüfung ohne Netz
 
